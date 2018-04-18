@@ -1,0 +1,31 @@
+#Select just the columns from the train data frame that contain no missing values.
+#Assign the resulting data frame, that contains just these columns, to df_no_mv.
+import pandas as pd
+
+data = pd.read_csv('AmesHousing.txt', delimiter="\t")
+train = data[0:1460]
+test = data[1460:]
+
+train_null_counts = train.isnull().sum()
+
+print(train_null_counts)
+df_no_mv = train[train_null_counts[train_null_counts==0].index]
+
+#Convert all of the text columns in train to the categorical data type.
+text_cols = df_no_mv.select_dtypes(include=['object']).columns
+
+for col in text_cols:
+    print(col+":", len(train[col].unique()))
+    train[col] = train[col].astype('category')
+train['Utilities'].cat.codes.value_counts()
+
+#Convert all of the columns in text_cols from the train data frame into dummy columns.
+#Delete the original columns from text_cols from the train data frame.
+#Create Dummy columns as an increase in the Utilities column from 1 to 2 has no correlation value with the target column, and the #categorical codes are instead used for uniqueness and exclusivity (the category associated with 0 is different than the one associated #with 1).
+
+dummy_cols = pd.DataFrame()
+
+for each in text_cols:
+    col_dummies = pd.get_dummies(train[col])
+    train = pd.concat([train,col_dummies],axis=1)
+    del train[col]
