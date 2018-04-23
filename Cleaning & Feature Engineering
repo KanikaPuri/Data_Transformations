@@ -29,3 +29,12 @@ for each in text_cols:
     col_dummies = pd.get_dummies(train[col])
     train = pd.concat([train,col_dummies],axis=1)
     del train[col]
+    
+    
+Data Inputation
+Impute the missing values from float_cols with the column's mean.
+Check for any missing values in float_cols
+
+float_cols = df_missing_values.select_dtypes(include=['float'])
+float_cols = float_cols.fillna(df_missing_values.mean())
+df_missing_values.isnull().sum()
